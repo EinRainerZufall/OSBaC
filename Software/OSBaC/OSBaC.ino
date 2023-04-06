@@ -20,7 +20,9 @@
 //#define password_OTA_clear "admin"                  // No authentication by default
 //#define password_OTA_hash "21232f297a57a5a743894a0e4a801fc3"// Password can be set with it's md5 value as well (admin)
 
-//#define* debug_mode
+const char* ssid = "FRITZ!Box 6690 LL";
+const char* password = "38358216546848753105";
+#define debug_mode
 
 const int status_led_off_time = 60;                 // time after the status LED switches off in sec
 
@@ -32,7 +34,7 @@ const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
 const int sensor1_pin = D10;                        // sensor for reference run in blind mode
-const int sensor2_pin = D9;
+const int sensor2_pin = D9;                         // also A10 and A9 possible
 
 const long end_pos = 350000;                        // only used in debug mode
 const int movement_speed = 5000;                    // motor speed
@@ -68,10 +70,8 @@ bool disableLED = true;
 #include <ESPmDNS.h>
 #include <ArduinoOTA.h>
 
+WebServer server(80);
 AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin); 
-
-void blind_rev_dev();
-bool blind_rev();
 
 void setup(){
   // set pin modes
@@ -98,26 +98,31 @@ void setup(){
       //ToDo: what else?
     }
   #endif
-}
 
-void loop(){
-  unsigned long curTime = millis();
+  connectToWifi();
+
+  #ifdef enable_OTA_mode
+    startOTA();
+  #endif
+
+  // identify handler
+  //server.on(apiUrl + "/identify", identify);
+
+  // positinstate handler <- ToDo: not work, to much to handle the wifi and motor control, solution?
+  //server.on(apiUrl + "/positionstate", []() {
+  //  server.send(200, "text/plain", positionState);
+  //});
+
+  // main web handler
+  server.on("/", webHandler);
+
+  // handler for 404
+  server.onNotFound(handleNotFound);
+
+  server.begin();
+  Serial.println("HTTP server started");
+  
 
   // switch status LED off
-  if(curTime >= (status_led_off_time * 1000) && disableLED){
-    digitalWrite(status_led, LOW);
-    Serial.println("Disable status LED");
-    disableLED = false;
-  }
-
-  #ifdef update_interval_time
-    // check for updates
-    if(curTime >= (update_interval_time * 24 * 60 * 60 * 1000)){
-      //ToDO: write update routine!
-      Serial.println("Check for updates!");
-      delay(10);
-      Serial.println("no updates found!");
-    }
-  #endif
-  
+  digitalWrite(status_led, HIGH);
 }
