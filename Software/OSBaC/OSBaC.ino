@@ -53,8 +53,6 @@ const int movement_accel = 750;                     // Motorbeschleunigung
 
 const String Build_Version = "v1.0";
 bool disableLED = true;
-volatile uint16_t overTime = 0;
-volatile bool overTimeBool = false;
 
 #ifdef BLIND_MODE
   #ifdef CURTAIN_MODE

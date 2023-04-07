@@ -23,15 +23,5 @@ void loop(){
   #ifdef enable_OTA_mode
       ArduinoOTA.handle();
   #endif
-
-  // overTime inkementieren damit länger als 50 Tage gezählt werden kann
-  if(millis() > 4276800000  && overTimeBool==true){
-    overTime = ++overTime;
-    overTimeBool = false;
-  }
-
-  if(millis() < 5000){
-    overTimeBool = true;
-  }
-
+  
 }

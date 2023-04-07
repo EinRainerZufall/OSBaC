@@ -94,18 +94,20 @@ void handleNotFound(){
 
 // main web handle
 void webHandler(){
+  //unsigned long startTime = micros(); // zum testen
   //int argCount = server.args();
   
   uint16_t sen1 = analogRead(sensor1_pin);
   uint16_t sen2 = analogRead(sensor2_pin);
 
-  unsigned long time = millis();
-  unsigned long runMillis= time;
-  unsigned long allSeconds=time/1000;
-  int runHours= (allSeconds/3600)+overTime;
-  int secsRemaining=allSeconds%3600;
-  int runMinutes=secsRemaining/60;
-  int runSeconds=secsRemaining%60;
+  uint64_t allSeconds = esp_timer_get_time() / 1000000;
+  int runHours = (allSeconds % 86400) / 3600;
+  int runDays = allSeconds / 86400;
+  int secsRemaining = allSeconds % 3600;
+  int runMinutes = secsRemaining / 60;
+  int runSeconds = secsRemaining % 60;
+
+  const String refreshPeriod = "1000"; // in ms
 
   String sen1_status = "offen";
   String sen2_status = "offen";
@@ -122,6 +124,14 @@ void webHandler(){
 
   String webSite =  "<!DOCTYPE html>\n"
                     "<html lang=\"de\">\n"
+                    "<head>\n"
+                    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+                    "<meta charset=\"utf-8\">\n"
+                    "<script>\n"
+                    "function refresh(refreshPeriod){setTimeout('location.reload(true)', refreshPeriod);}\n"
+                    "window.onload = refresh(" + refreshPeriod + ");\n"
+                    "</script>\n"
+                    "</head>\n"
                     "<h1>OSBaC</h1>\n"
                     "<table align=\"left\" border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width:270px\">\n"
                     "<tbody>\n"
@@ -143,7 +153,7 @@ void webHandler(){
                     "</tr>\n"
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Status</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1_status+ "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1_status + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Wert</td>\n"
@@ -167,7 +177,7 @@ void webHandler(){
                     "</tr>\n"
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Laufzeit</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + runHours + "h " + runMinutes + "m " + runSeconds + "s</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + runDays + "d " + runHours + "h " + runMinutes + "m " + runSeconds + "s</td>\n"
                     "</tr>\n"
                     "</tbody>\n"
                     "</table>\n"
@@ -175,6 +185,10 @@ void webHandler(){
 
   server.send(200, "text/html", webSite);
 
+  //unsigned long endTime = micros(); // zum testen
+  //Serial.print("execution was "); // immer noch zum testen
+  //Serial.print(endTime-startTime); // siehe eine Zeile weiter oben
+  //Serial.println("µs"); // siehe immer noch nach oben
 }
 
 
