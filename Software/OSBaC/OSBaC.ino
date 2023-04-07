@@ -2,49 +2,56 @@
 // SETTINGS
 //*********
 
-// choose one mode
+// Denn Namen des Gerätes
+#define DEVICE_NAME "Rollo Links Schlafzimmer"
+
+// einen Modus wählen
 #define BLIND_MODE
 //#define CURTAIN_MODE
 
 
-//#define* mDNS_mode "ESP32"                           // if you want a mDNS
+//#define* mDNS_mode "ESP32"                           // Wenn man einen mDNS will
 
-//#define* update_interval_time 30                     // update interval in days, if you do not want to check for updates comment it out
+//#define* update_interval_time 30                     // Update interval in Tagen, noch nicht verfügbar
 
 // OTA update settings
-//#define enable_OTA_mode                             // enable OTA update mode
-#define OTA_port 3232                               // Port defaults to 3232
-#define OTA_hostname "myESP32"                      // Hostname defaults to esp3232-[MAC]
+#define enable_OTA_mode                             // für OTA Updates
+#define OTA_port 3232                               // der Standart Port ist 3232
+#define OTA_hostname "myESP32"                      // Der Standardt name ist myESP3232, gefolgt immer von "-[MAC]"
 
-// It is recommended to set a password when you use the OTA update function, you can set the pw in clear or hashed form
-//#define password_OTA_clear "admin"                  // No authentication by default
-//#define password_OTA_hash "21232f297a57a5a743894a0e4a801fc3"// Password can be set with it's md5 value as well (admin)
+// Es ist empfohlen, ein Kennwort festzulegen, wenn die OTA Funktion verwenden wird. Ein Kennwort im Klartext oder in gehashter Form ist möglich.
+//#define password_OTA_clear "admin"                  // Klartext
+//#define password_OTA_hash "21232f297a57a5a743894a0e4a801fc3"// gehashte Form (admin)
 
 const char* ssid = "FRITZ!Box 6690 LL";
 const char* password = "38358216546848753105";
-#define debug_mode
 
-const int status_led_off_time = 60;                 // time after the status LED switches off in sec
+const int status_led_off_time = 60;                 // Zeit bis sich die Statusled ausschaltet in Sekunden
 
-const String apikey = "1234";                       // choose your ouwn API key
-const String apiUrl = "/api/v1";                    // do not change this unlike you know what your doing
+const String apikey = "1234";                       // der API Key
+const String apiUrl = "/api/v1";                    // Url, nur ändern wenn du weißt was du machst
 
-const int status_led = D0;
+const int status_led = D10; //D0;
 const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
-const int sensor1_pin = D10;                        // sensor for reference run in blind mode
-const int sensor2_pin = D9;                         // also A10 and A9 possible
+const int sensor1_pin = D0; //D10;                        // Referenzsensor im Rollomodus
+const int sensor2_pin = D9;                         // A oder D möglich
+const int sensor1_A_Wert = 2000;                    // 
+const int sensor2_A_Wert = 2000;                    // 
 
-const long end_pos = 350000;                        // only used in debug mode
-const int movement_speed = 5000;                    // motor speed
-const int reference_speed = 2500;                   // motor speed for the reference run
-const int movement_accel = 750;                     // motor acceleration
+const long end_pos = 350000;                        // wird nur im Debug Modus verwendet
+const int movement_speed = 5000;                    // Motorgeschwindigkeit
+const int reference_speed = 2500;                   // Motorreferenzgeschwindigkeit
+const int movement_accel = 750;                     // Motorbeschleunigung
 
 //**************************************************************
 // SETTINGS END HERE!!! DONT CHANGE ANYTHING BELOW THIS POINT!!!
 //**************************************************************
 
+#define debug_mode
+
+const String Build_Version = "v1.0";
 bool disableLED = true;
 
 #ifdef BLIND_MODE
@@ -79,8 +86,8 @@ void setup(){
   pinMode(dir_pin, OUTPUT);
   pinMode(step_pin, OUTPUT);
   pinMode(en_pin, OUTPUT);
-  pinMode(sensor1_pin, INPUT_PULLDOWN);
-  pinMode(sensor2_pin, INPUT_PULLDOWN);
+  pinMode(sensor1_pin, INPUT);
+  pinMode(sensor2_pin, INPUT);
 
   // switch status LED off
   digitalWrite(status_led, LOW);
@@ -108,10 +115,8 @@ void setup(){
   // identify handler
   //server.on(apiUrl + "/identify", identify);
 
-  // positinstate handler <- ToDo: not work, to much to handle the wifi and motor control, solution?
-  //server.on(apiUrl + "/positionstate", []() {
-  //  server.send(200, "text/plain", positionState);
-  //});
+  // api/v1 handle
+  server.on(apiUrl, apiV1Handle);
 
   // main web handler
   server.on("/", webHandler);

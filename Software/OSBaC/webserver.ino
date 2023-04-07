@@ -93,11 +93,79 @@ void handleNotFound(){
 
 // main web handle
 void webHandler(){
-  // usedMode = true -> Blind
-  // usedMode = false -> Curtain
+  //int argCount = server.args();
+  
+  uint16_t sen1 = analogRead(sensor1_pin);
+  uint16_t sen2 = analogRead(sensor2_pin);
 
-  int argCount = server.args();
+  String sen1_status = "offen";
+  String sen2_status = "offen";
 
-  server.send(200, "text/plain", "TEST 123 !");
+  #ifdef BLIND_MODE
+  String mode = "Rollo Modus";
+  #else
+  String mode = "Vorhang Modus";
+  #endif
 
+  if(sen1 < sensor1_A_Wert) sen1_status = "geschlossen";
+
+  if(sen2 < sensor2_A_Wert) sen2_status = "geschlossen";
+
+  String webSite =  "<!DOCTYPE html>\n"
+                    "<html lang=\"de\">\n"
+                    "<h1>OSBaC</h1>\n"
+                    "<table align=\"left\" border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width:270px\">\n"
+                    "<tbody>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Name</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" DEVICE_NAME "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">IP</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + WiFi.localIP().toString() + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Version</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + Build_Version + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Mode</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + mode + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Status</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1_status+ "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Wert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1 + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Ausl&ouml;sewert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sensor1_A_Wert + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Status</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen2_status + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Wert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen2 + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Ausl&ouml;sewert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sensor2_A_Wert + "</td>\n"
+                    "</tr>\n"
+                    "</tbody>\n"
+                    "</table>\n"
+                    "</html>";
+
+  server.send(200, "text/html", webSite);
+
+}
+
+
+// api/v1 handle
+void apiV1Handle(){
+  server.send(200, "text/plain", "Test");  
 }

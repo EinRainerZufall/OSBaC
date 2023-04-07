@@ -18,4 +18,10 @@ void loop(){
     }
   #endif
   
+  server.handleClient();
+
+  #ifdef enable_OTA_mode
+      ArduinoOTA.handle();
+  #endif
+   
 }
