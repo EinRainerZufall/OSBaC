@@ -53,6 +53,8 @@ const int movement_accel = 750;                     // Motorbeschleunigung
 
 const String Build_Version = "v1.0";
 bool disableLED = true;
+volatile uint16_t overTime = 0;
+volatile bool overTimeBool = false;
 
 #ifdef BLIND_MODE
   #ifdef CURTAIN_MODE
@@ -81,7 +83,7 @@ WebServer server(80);
 AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin); 
 
 void setup(){
-  // set pin modes
+  // Pin modes
   pinMode(status_led, OUTPUT);
   pinMode(dir_pin, OUTPUT);
   pinMode(step_pin, OUTPUT);
@@ -89,20 +91,20 @@ void setup(){
   pinMode(sensor1_pin, INPUT);
   pinMode(sensor2_pin, INPUT);
 
-  // switch status LED off
+  // Status LED ausschalten
   digitalWrite(status_led, LOW);
-  // diable motor controller
+  // Motor Treiber ausschalten
   digitalWrite(en_pin, HIGH);
 
   Serial.begin(115200);
 
-  // homing routine
+  // Homing
   #ifdef debug_mode
     blind_rev_dev();
   #else
     if(!blind_rev()){
       ESP.restart();
-      //ToDo: what else?
+      //ToDo: was machma jetzt?
     }
   #endif
 
@@ -128,6 +130,6 @@ void setup(){
   Serial.println("HTTP server started");
   
 
-  // switch status LED off
+  // Status LED einschalten
   digitalWrite(status_led, HIGH);
 }

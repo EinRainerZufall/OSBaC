@@ -4,7 +4,8 @@ bool connectToWifi(){
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
 
-  // wait until the wifi is connected <- ToDo: 
+  // Punkte schreiben bis WiFi da ist
+  // ToDo: was mach ma wenn es nicht geht?
   while(WiFi.status() != WL_CONNECTED){
     delay(250);
     Serial.print(".");
@@ -14,7 +15,7 @@ bool connectToWifi(){
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
-  // start mDNS if enabled
+  // mDNS starten wenn Aktiv
   #ifdef mDNS_mode
     if(MDNS.begin(mDNS_mode)){
      Serial.println("MDNS responder started");
@@ -70,7 +71,7 @@ void startOTA(){
 }
 
 
-// if the handle is not found
+// 404 Handle
 void handleNotFound(){
   #ifdef debug_mode
     String message = "File Not Found\n\n";
@@ -97,6 +98,14 @@ void webHandler(){
   
   uint16_t sen1 = analogRead(sensor1_pin);
   uint16_t sen2 = analogRead(sensor2_pin);
+
+  unsigned long time = millis();
+  unsigned long runMillis= time;
+  unsigned long allSeconds=time/1000;
+  int runHours= (allSeconds/3600)+overTime;
+  int secsRemaining=allSeconds%3600;
+  int runMinutes=secsRemaining/60;
+  int runSeconds=secsRemaining%60;
 
   String sen1_status = "offen";
   String sen2_status = "offen";
@@ -155,6 +164,10 @@ void webHandler(){
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Ausl&ouml;sewert</td>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sensor2_A_Wert + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Laufzeit</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + runHours + "h " + runMinutes + "m " + runSeconds + "s</td>\n"
                     "</tr>\n"
                     "</tbody>\n"
                     "</table>\n"
