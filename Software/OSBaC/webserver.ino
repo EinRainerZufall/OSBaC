@@ -3,6 +3,7 @@ bool isValidNumber(String str){
   if(str == ""){
     return false;
   }
+  // ToDO: Wenn das erste Zeichen ein minus ist dann weg damit -> aber danach eine kontrolle ob der str leer ist!
   for(byte i = 0; i < str.length(); i++){
     if(!isDigit(str.charAt(i))){
       return false;
@@ -110,6 +111,7 @@ void webHandler(){
   //unsigned long startTime = micros(); // zum testen
   int argCount = server.args();
   
+  // evtl. die Funktion analogReadMilliVolts benutzen
   uint16_t sen1 = analogRead(sensor1_pin);
   uint16_t sen2 = analogRead(sensor2_pin);
 
@@ -152,48 +154,56 @@ void webHandler(){
                     "<table align=\"left\" border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width:270px\">\n"
                     "<tbody>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Name</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Name</td>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" DEVICE_NAME "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">IP</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + WiFi.localIP().toString() + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">IP</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + WiFi.localIP().toString() + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Version</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + Build_Version + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Version</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + Build_Version + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Mode</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + mode + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Mode</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + mode + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Status</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1_status + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 1 Status</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + sen1_status + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Wert</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen1 + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 1 Wert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + sen1 + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 1 Ausl&ouml;sewert</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sensor1_A_Wert + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 1 Ausl&ouml;sewert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + settings.getUInt("sensor1_A_Wert") + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Status</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen2_status + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 2 Status</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + sen2_status + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Wert</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sen2 + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 2 Wert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + sen2 + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Sensor 2 Ausl&ouml;sewert</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + sensor2_A_Wert + "</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 2 Ausl&ouml;sewert</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + settings.getUInt("sensor2_A_Wert") + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:170px\">Laufzeit</td>\n"
-                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + runDays + "d " + runHours + "h " + runMinutes + "m " + runSeconds + "s</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Motor Geschwindigkeit</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + settings.getUInt("movement_speed") + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Endposition</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + settings.getULong64("end_pos") + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Laufzeit</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + runDays + "d " + runHours + "h " + runMinutes + "m " + runSeconds + "s</td>\n"
                     "</tr>\n"
                     "<tr>\n"
                     "<td colspan=\"2\" style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:123px\">" + key_out + "</td>\n"
@@ -244,6 +254,7 @@ void webHandler(){
 // setsen1awert -> setzt denn Auslösewert für Sensor 1
 // setsen2awert -> setzt denn Auslösewert für Sensor 2
 // setmotorendpos -> setzt die Endposition vom Motor
+// setmotorspeed -> setzt die geschwindigkeit der Motor
 void apiV1Handle(){
   int argCount = server.args();
   String message;
@@ -289,12 +300,15 @@ void apiV1Handle(){
       message += "Zahlencheck:ACK\n";
     }
 
-    if(set_sensor1_Awert(server.arg("setsen1awert").toInt())){
+    if(settings.putUInt("sensor1_A_Wert", server.arg("setsen1awert").toInt()) > 1){
       message += "ACK\n";
     }else{
       message += "NAK\n";
     }
 
+    message += "setsen2awert:";
+    message += settings.getUInt("sensor1_A_Wert");
+    message += "\n";
     message += "----------\n";
 
     server.send(200, "text/plain", message);
@@ -318,12 +332,58 @@ void apiV1Handle(){
       message += "Zahlencheck:ACK\n";
     }
 
-    if(set_sensor2_Awert(server.arg("setsen2awert").toInt())){
+    if(settings.putUInt("sensor2_A_Wert", server.arg("setsen2awert").toInt()) > 1){
       message += "ACK\n";
     }else{
       message += "NAK\n";
     }
     
+    message += "setsen2awert:";
+    message += settings.getUInt("sensor2_A_Wert");
+    message += "\n";
+    message += "----------\n";
+
+    server.send(200, "text/plain", message);
+    return;
+  }
+
+  // Die Motor geschwindigkeit prüfen und schreiben
+  if(server.hasArg("setmotorspeed")){
+    message += "setmotorspeed:";
+    message += server.arg("setmotorspeed");
+    message += "\n";
+
+    //ist es eine Zahl?
+    if(!isValidNumber(server.arg("setmotorspeed"))){
+      message += "Zahlencheck:NAK\n";
+      message += "----------\n";
+      server.send(200, "text/plain", message);
+      return;
+      // mach ma da jetzt noch was?
+    }else{
+      message += "Zahlencheck:ACK\n";
+    }
+
+    // Werte Bereich prüfen!
+    if(server.arg("setmotorspeed").toInt() <= 0){
+      message += "Wertebereich:NAK\n";
+      message += "----------\n";
+      server.send(200, "text/plain", message);
+      return;
+      // mach ma da jetzt noch was?
+    }else{
+      message += "Wertebereich:ACK\n";
+    }
+
+    if(settings.putUInt("movement_speed", server.arg("setmotorspeed").toInt()) > 1){
+      message += "ACK\n";
+    }else{
+      message += "NAK\n";
+    }
+    
+    message += "setmotorspeed:";
+    message += settings.getUInt("movement_speed");
+    message += "\n";
     message += "----------\n";
 
     server.send(200, "text/plain", message);
@@ -362,12 +422,15 @@ void apiV1Handle(){
       message += "Wertebereich:ACK\n";
     }
 
-    if(set_motor_endpos(temp)){
+    if(settings.putULong64("end_pos", temp) > 1){
       message += "ACK\n";
     }else{
       message += "NAK\n";
     }
     
+    message += "setmotorendpos:";
+    message += settings.getULong64("end_pos");
+    message += "\n";
     message += "----------\n";
 
     server.send(200, "text/plain", message);

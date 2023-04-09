@@ -37,13 +37,16 @@ const int step_pin = D1;
 const int en_pin = D3;
 const int sensor1_pin = D0; //D10;                        // Referenzsensor im Rollomodus
 const int sensor2_pin = D9;                         // A oder D möglich
-const int sensor1_A_Wert = 2000;                    // 
-const int sensor2_A_Wert = 2000;                    // 
 
-const uint64_t end_pos = 350000;                    // wird nur im Debug Modus verwendet
-const int movement_speed = 5000;                    // Motorgeschwindigkeit
-const int reference_speed = 2500;                   // Motorreferenzgeschwindigkeit
-const int movement_accel = 750;                     // Motorbeschleunigung
+const uint reference_speed = 2500;                  // Motorreferenzgeschwindigkeit
+const uint movement_accel = 750;                    // Motorbeschleunigung
+
+                                                    // Die nachfolgenden Werte werden nur beim Ersten start geschriebn
+                                                    // und können danach nur noch per API geändert werden
+const uint sensor1_A_Wert = 2000;                   // Auslösewert für Sensor 1
+const uint sensor2_A_Wert = 2000;                   // Auslösewert für Sensor 2
+const uint64_t end_pos = 350000;                    // wird nur beim ersten Start geschrieben
+const uint movement_speed = 5000;                   // Motorgeschwindigkeit
 
 //**************************************************************
 // SETTINGS END HERE!!! DONT CHANGE ANYTHING BELOW THIS POINT!!!
@@ -76,9 +79,11 @@ bool disableLED = true;
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <ArduinoOTA.h>
+#include <Preferences.h>
 
 WebServer server(80);
-AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin); 
+AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin);
+Preferences settings;
 
 void setup(){
   // Pin modes
@@ -95,6 +100,14 @@ void setup(){
   digitalWrite(en_pin, HIGH);
 
   Serial.begin(115200);
+
+  settings.begin("osbac", false);
+
+  // Werte beim Ersten Start schreiben
+  if(!settings.isKey("sensor1_A_Wert")) settings.putUInt("sensor1_A_Wert", sensor1_A_Wert);
+  if(!settings.isKey("sensor2_A_Wert")) settings.putUInt("sensor2_A_Wert", sensor2_A_Wert);
+  if(!settings.isKey("end_pos")) settings.putULong64("end_pos", end_pos);
+  if(!settings.isKey("movement_speed")) settings.putUInt("movement_speed", movement_speed);
 
   // Homing
   #ifdef debug_mode
