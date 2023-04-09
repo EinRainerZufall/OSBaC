@@ -23,5 +23,4 @@ void loop(){
   #ifdef enable_OTA_mode
       ArduinoOTA.handle();
   #endif
-  
 }

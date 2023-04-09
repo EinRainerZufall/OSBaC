@@ -4,6 +4,7 @@ void blind_rev_dev(){
   Serial.println("DEV reference run");
 }
 
+
 // Normales Homing
 bool blind_rev(){
   Serial.println("Start reference run!");
@@ -35,5 +36,35 @@ bool blind_rev(){
   stepper.setCurrentPosition(0);
   Serial.println("Reference run complete!");
 
+  return true;
+}
+
+
+// Motor anhalten und Speichern der IST Position
+bool motor_stop(){
+  return true;
+}
+
+
+// Auslösewert für Sensor 1 ändern
+bool set_sensor1_Awert(int aWert){
+  return true;
+}
+
+
+// Auslösewert für Sensor 2 ändern
+bool set_sensor2_Awert(int aWert){
+  return true;
+}
+
+
+// Motor bewegen
+bool motor_drive(int pos){
+  return true;
+}
+
+
+// Endposition ändern
+bool set_motor_endpos(uint64_t pos){
   return true;
 }

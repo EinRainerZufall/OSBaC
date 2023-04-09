@@ -31,7 +31,7 @@ const int status_led_off_time = 60;                 // Zeit bis sich die Statusl
 const String apikey = "1234";                       // der API Key
 const String apiUrl = "/api/v1";                    // Url, nur ändern wenn du weißt was du machst
 
-const int status_led = D10; //D0;
+const int status_led = D10; //LED_BUILTIN;
 const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
@@ -40,7 +40,7 @@ const int sensor2_pin = D9;                         // A oder D möglich
 const int sensor1_A_Wert = 2000;                    // 
 const int sensor2_A_Wert = 2000;                    // 
 
-const long end_pos = 350000;                        // wird nur im Debug Modus verwendet
+const uint64_t end_pos = 350000;                    // wird nur im Debug Modus verwendet
 const int movement_speed = 5000;                    // Motorgeschwindigkeit
 const int reference_speed = 2500;                   // Motorreferenzgeschwindigkeit
 const int movement_accel = 750;                     // Motorbeschleunigung
