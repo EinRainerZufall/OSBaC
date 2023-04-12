@@ -17,7 +17,7 @@ bool blind_rev(){
   
   stepper.move(end_pos * -1.3);                     // bissle mehr als die gesamtlänge für mögliche Fehler
 
-  while(digitalRead(sensor1_pin) == LOW){
+  while(analogRead(sensor1_pin) > sensor1_A_Wert){
     stepper.run();
     //counter = stepper.currentPosition();
     //Serial.println(counter);
@@ -42,11 +42,15 @@ bool blind_rev(){
 
 // Motor anhalten und Speichern der IST Position
 bool motor_stop(){
+  stepper.stop();
+  if(stepper.isRunning()) return false;
+  cur_pos = map_uint64_t(stepper.currentPosition(), 0, end_pos, 100, 0);
   return true;
 } 
 
 
 // Motor bewegen
 bool motor_drive(int pos){
+  if(pos < 0 || pos > 100) return false;
   return true;
 }

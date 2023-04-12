@@ -1,17 +1,3 @@
-// prüfen ob ein string nur aus Zahlen besteht
-bool isValidNumber(String str){
-  if(str == ""){
-    return false;
-  }
-  // ToDO: Wenn das erste Zeichen ein minus ist dann weg damit -> aber danach eine kontrolle ob der str leer ist!
-  for(byte i = 0; i < str.length(); i++){
-    if(!isDigit(str.charAt(i))){
-      return false;
-    }
-  }
-  return true;
-}
-
 bool connectToWifi(){
   WiFi.mode(WIFI_STA);
   //WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);//<- ToDo: if there is no wifi credentials start AP
@@ -19,10 +5,12 @@ bool connectToWifi(){
   Serial.println("Connecting");
 
   // Punkte schreiben bis WiFi da ist
-  // ToDo: was mach ma wenn es nicht geht?
+  int counter = 0;
   while(WiFi.status() != WL_CONNECTED){
     delay(250);
     Serial.print(".");
+    counter++;
+    if(counter>80) error_mode("Keine Verbindung mit dem WLAN möglich");
   }
 
   Serial.println("");
@@ -168,6 +156,10 @@ void webHandler(){
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Mode</td>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + mode + "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Aktuelle Position</td>\n"
+                    "<td style=\"background-color:#eeeeee; border-color:#000000; text-align:center; width:130px\">" + cur_pos + "</td>\n"
                     "</tr>\n"
                     "<tr>\n"
                     "<td style=\"background-color:#eeeeee; border-color:#000000; width:230px\">Sensor 1 Status</td>\n"
@@ -460,32 +452,26 @@ void apiV1Handle(){
 
     message += "Zahlencheck:ACK\n";
 
-    if(motor_drive(temp.toInt())){
-      message += "ACK\n";
-      message += "setpos:";
-      message += temp;  //ToDo: hier die IST pos ausgeben
-      message += "\n";
-    }else{
-      message += "NAK\n";
-    }
+    motor_drive(temp.toInt());
+
     message += "----------\n";
   }
 
   // Positions Abfrage
   if(server.hasArg("getpos")){
     message += "curpos:";
-    message += "0"; //ToDo
+    message += cur_pos;
     message += "\n";
-    message += "tarpos:";
-    message += "0"; //ToDo
-    message += "\n";
+    //message += "tarpos:";
+    //message += "0"; //ToDo:
+    //message += "\n";
     message += "----------\n";
   }
 
   // Bewegungs Abfrage
   if(server.hasArg("getmov")){
     message += "getmov:";
-    message += "2"; //ToDo
+    message += "2"; //ToDo:
     message += "\n";
     message += "----------\n";
   }

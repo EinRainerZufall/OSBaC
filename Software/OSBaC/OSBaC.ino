@@ -29,14 +29,15 @@ const char* password = "38358216546848753105";
 const int status_led_off_time = 60;                 // Zeit bis sich die Statusled ausschaltet in Sekunden
 
 const String apikey = "1234";                       // der API Key
-const String apiUrl = "/api/v1";                    // Url, nur ändern wenn du weißt was du machst
+const String apiUrl = "/api/v1";                    // API Url, nur ändern wenn du weißt was du machst
 
 const int status_led = D10; //LED_BUILTIN;
+const int error_led = D10;
 const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
-const int sensor1_pin = D0; //D10;                        // Referenzsensor im Rollomodus
-const int sensor2_pin = D9;                         // A oder D möglich
+const int sensor1_pin = D0; //D10;                         // Referenzsensor im Rollomodus
+const int sensor2_pin = D9;                         // Endsensor im Vorhangmodus
 
 const uint reference_speed = 2500;                  // Motorreferenzgeschwindigkeit
 const uint movement_accel = 750;                    // Motorbeschleunigung
@@ -45,7 +46,7 @@ const uint movement_accel = 750;                    // Motorbeschleunigung
                                                     // und können danach nur noch per API geändert werden
 const uint sensor1_A_Wert = 2000;                   // Auslösewert für Sensor 1
 const uint sensor2_A_Wert = 2000;                   // Auslösewert für Sensor 2
-const uint64_t end_pos = 350000;                    // wird nur beim ersten Start geschrieben
+const uint64_t end_pos = 350000;                    // Endposition
 const uint movement_speed = 5000;                   // Motorgeschwindigkeit
 
 //**************************************************************
@@ -54,6 +55,7 @@ const uint movement_speed = 5000;                   // Motorgeschwindigkeit
 
 #define debug_mode
 
+volatile uint64_t cur_pos = 0;
 const String Build_Version = "v1.0";
 bool disableLED = true;
 
@@ -114,8 +116,8 @@ void setup(){
     blind_rev_dev();
   #else
     if(!blind_rev()){
+      error_mode("Wegüberschreitung beim Referenz lauf");
       ESP.restart();
-      //ToDo: was machma jetzt?
     }
   #endif
 
