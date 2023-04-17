@@ -452,7 +452,11 @@ void apiV1Handle(){
 
     message += "Zahlencheck:ACK\n";
 
-    motor_drive(temp.toInt());
+    if(motor_move_check(temp.toInt())){
+      message += "ACK\n";
+    }else{
+      message += "NAK\n";
+    }
 
     message += "----------\n";
   }

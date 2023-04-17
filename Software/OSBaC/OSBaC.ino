@@ -88,6 +88,15 @@ AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin);
 Preferences settings;
 
 void setup(){
+  // Motor Funktion auf Core 0 pinnen
+  xTaskCreatePinnedToCore(motor_move,     // Task function to be called
+                          "motor_move",   // Name of the task Any Name
+                          10000,          // available heap memory of the task
+                          NULL,           // possibly parameter of the task
+                          3,              // task priority
+                          NULL,           // used task handle
+                          1);             // used Core
+
   // Pin modes
   pinMode(status_led, OUTPUT);
   pinMode(dir_pin, OUTPUT);

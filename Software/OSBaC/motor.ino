@@ -23,7 +23,7 @@ bool blind_rev(){
     //Serial.println(counter);
 
     // Auf Fehler prüfen
-    if(stepper.currentPosition() > (end_pos * 1.25) || stepper.currentPosition() < (end_pos * -1.25)){
+    if(stepper.currentPosition() > (settings.getULong64("end_pos") * 1.25) || stepper.currentPosition() < (settings.getULong64("end_pos") * -1.25)){
       stepper.stop();
       Serial.println("Reference run failed!");
       digitalWrite(en_pin, HIGH);                   // Motor aus
@@ -44,13 +44,27 @@ bool blind_rev(){
 bool motor_stop(){
   stepper.stop();
   if(stepper.isRunning()) return false;
-  cur_pos = map_uint64_t(stepper.currentPosition(), 0, end_pos, 100, 0);
+  cur_pos = map_uint64_t(stepper.currentPosition(), 0, settings.getULong64("end_pos"), 100, 0);
   return true;
 } 
 
 
-// Motor bewegen
-bool motor_drive(int pos){
+// Motor bewegung prüfen
+bool motor_move_check(int pos){
   if(pos < 0 || pos > 100) return false;
+  uint64_t steps = 0;
+
+  steps = map_uint64_t(pos, 100, 0, 0, settings.getULong64("end_pos"));
+
+  motor_move(steps);
+
   return true;
+}
+
+// Motor bewegen
+void motor_move(uint64_t steps){
+  stepper.moveTo(steps);
+  while(stepper.currentPosition() != stepper.targetPosition()){
+    stepper.run();
+  }
 }
