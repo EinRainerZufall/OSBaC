@@ -1,14 +1,14 @@
 // Im Fehlerfall eine Endlos Schleife
 void error_mode(String str){
-  digitalWrite(status_led, LOW);
+  digitalWrite(status_led, HIGH);
   Serial.print("Error: ");
   Serial.println(str);
   Serial.println("Error Modus aktiv! Parameter anpassen und Controller neustarten!");
 
   while(1){
-    digitalWrite(error_led, LOW);
-    delay(150);
     digitalWrite(error_led, HIGH);
+    delay(150);
+    digitalWrite(error_led, LOW);
     delay(100);
   }
 }
@@ -48,7 +48,7 @@ void loop(){
 
   // Status LED ausschalten
   if(curTime >= (status_led_off_time * 1000) && disableLED){
-    digitalWrite(status_led, LOW);
+    digitalWrite(status_led, HIGH);
     Serial.println("Disable status LED");
     disableLED = false;
   }

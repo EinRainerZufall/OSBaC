@@ -31,12 +31,12 @@ const int status_led_off_time = 60;                 // Zeit bis sich die Statusl
 const String apikey = "1234";                       // der API Key
 const String apiUrl = "/api/v1";                    // API Url, nur ändern wenn du weißt was du machst
 
-const int status_led = D10; //LED_BUILTIN;
-const int error_led = D10;
+const int status_led = LED_BUILTIN;
+const int error_led = LED_BUILTIN;
 const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
-const int sensor1_pin = D0; //D10;                         // Referenzsensor im Rollomodus
+const int sensor1_pin = D10;                        // Referenzsensor im Rollomodus
 const int sensor2_pin = D9;                         // Endsensor im Vorhangmodus
 
 const uint reference_speed = 2500;                  // Motorreferenzgeschwindigkeit
@@ -88,14 +88,14 @@ AccelStepper stepper(AccelStepper::DRIVER, step_pin, dir_pin);
 Preferences settings;
 
 void setup(){
-  // Motor Funktion auf Core 0 pinnen
-  xTaskCreatePinnedToCore(motor_move,     // Task function to be called
-                          "motor_move",   // Name of the task Any Name
-                          10000,          // available heap memory of the task
-                          NULL,           // possibly parameter of the task
-                          3,              // task priority
-                          NULL,           // used task handle
-                          1);             // used Core
+  // Motor Funktion auf Core 1 pinnen
+  //xTaskCreatePinnedToCore(motor_move,     // Task function to be called
+  //                        "motor_move",   // Name of the task Any Name
+  //                        10000,          // available heap memory of the task
+  //                        NULL,           // possibly parameter of the task
+  //                        2,              // task priority
+  //                        NULL,           // used task handle
+  //                        1);             // used Core
 
   // Pin modes
   pinMode(status_led, OUTPUT);
@@ -106,7 +106,10 @@ void setup(){
   pinMode(sensor2_pin, INPUT);
 
   // Status LED ausschalten
-  digitalWrite(status_led, LOW);
+  digitalWrite(status_led, HIGH);
+  // Error LED ausschalten
+  digitalWrite(error_led, HIGH);
+
   // Motor Treiber ausschalten
   digitalWrite(en_pin, HIGH);
 
@@ -153,5 +156,5 @@ void setup(){
   
 
   // Status LED einschalten
-  digitalWrite(status_led, HIGH);
+  digitalWrite(status_led, LOW);
 }
