@@ -1,6 +1,6 @@
 bool connectToWifi(){
   WiFi.mode(WIFI_STA);
-  //WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);//<- ToDo: if there is no wifi credentials start AP
+  //WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);//<- ToDo: wenn keine Verbindung möglich als Accespoint Starten
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
 
@@ -44,7 +44,7 @@ void startOTA(){
 
   // OTA handle
   ArduinoOTA
-    .onStart([](){
+      .onStart([](){
       String type;
       if (ArduinoOTA.getCommand() == U_FLASH)
         type = "sketch";

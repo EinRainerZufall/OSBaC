@@ -56,15 +56,7 @@ bool motor_move_check(int pos){
 
   steps = map_uint64_t(pos, 100, 0, 0, settings.getULong64("end_pos"));
 
-  motor_move(steps);
+  stepper.moveTo(steps);
 
   return true;
-}
-
-// Motor bewegen
-void motor_move(uint64_t steps){
-  stepper.moveTo(steps);
-  while(stepper.currentPosition() != stepper.targetPosition()){
-    stepper.run();
-  }
 }

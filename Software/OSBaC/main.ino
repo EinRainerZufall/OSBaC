@@ -68,4 +68,9 @@ void loop(){
   #ifdef enable_OTA_mode
     ArduinoOTA.handle();
   #endif
+
+  // Bewege Motor wenn nötig
+  if(stepper.currentPosition() != stepper.targetPosition()){
+    stepper.run();
+  }
 }

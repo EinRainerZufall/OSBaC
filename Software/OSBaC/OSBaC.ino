@@ -15,7 +15,7 @@
 //#define* update_interval_time 30                     // Update interval in Tagen, noch nicht verfügbar
 
 // OTA update settings
-#define enable_OTA_mode                             // für OTA Updates
+//#define enable_OTA_mode                             // für OTA Updates
 #define OTA_port 3232                               // der Standart Port ist 3232
 #define OTA_hostname "myESP32"                      // Der Standardt name ist myESP3232, gefolgt immer von "-[MAC]"
 
@@ -36,8 +36,8 @@ const int error_led = LED_BUILTIN;
 const int dir_pin = D2;
 const int step_pin = D1;
 const int en_pin = D3;
-const int sensor1_pin = D10;                        // Referenzsensor im Rollomodus
-const int sensor2_pin = D9;                         // Endsensor im Vorhangmodus
+const int sensor1_pin = A10;                        // Referenzsensor im Rollomodus
+const int sensor2_pin = A9;                         // Endsensor im Vorhangmodus
 
 const uint reference_speed = 2500;                  // Motorreferenzgeschwindigkeit
 const uint movement_accel = 750;                    // Motorbeschleunigung
@@ -129,7 +129,6 @@ void setup(){
   #else
     if(!blind_rev()){
       error_mode("Wegüberschreitung beim Referenz lauf");
-      ESP.restart();
     }
   #endif
 
